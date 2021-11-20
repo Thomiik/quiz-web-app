@@ -95,11 +95,7 @@ app.post('/create', async (req, res, next) => {
         }
       }
     }
-
-    // TODO: insert quiz into database lol :D;
-    
-
-  } catch (error){
+  } catch (error) {
     return next(error);
   }
 
