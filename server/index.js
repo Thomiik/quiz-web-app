@@ -23,7 +23,7 @@ const create_schema = yup.object().shape({
 
 const free_type_schema = yup.object().shape({
   q: yup.string().trim().required(),
-  ca: yup.string().trim().required(),
+  ca: yup.string().trim(),
   cs: yup.boolean().required(),
 });
 
@@ -101,9 +101,9 @@ app.post('/create', async (req, res, next) => {
 
   quiz['UID'] = UID;
 
-  const created = await quizzes.insert(quiz)
+  await quizzes.insert(quiz)
 
-
+  res.status(201);
   res.json({
      message: 'Successfully created a quiz!',
      link: 'localhost:8080/quizzes/' + UID,
@@ -122,10 +122,20 @@ app.post('/answers/:id', (req, res) => {
 app.post('/play/:id', async (req, res) => {
   const questions = {}
   const { id: quizID } = req.params;
-  quiz = await quizzes.findOne({ UID: quizID});
+  const quiz = await quizzes.findOne({ UID: quizID});
+
+  if (quiz === null) {
+    res.status(404);
+    res.json({
+      message: "Quiz not found",
+      status: 404
+    });
+    return;
+  }
+  
 
   for (var question in quiz.questions) {
-    questions[question] = {}
+    questions[question] = {};
 
     const type = quiz.questions[question].type;
     const question_text = quiz.questions[question].question;
@@ -135,22 +145,29 @@ app.post('/play/:id', async (req, res) => {
     if (type === 'multiple-choice') {
       const multiple_correct = quiz.questions[question].multiple_correct
       questions[question].multiple_correct = multiple_correct
+      questions[question].choices = {};
       for (var choice in quiz.questions[question].choices) {
+        questions[question].choices[choice] = {};
+        const text = quiz.questions[question].choices[choice].text;
+        const isCorrect = quiz.questions[question].choices[choice].correct;
 
+        questions[question].choices[choice].text = text;
+        questions[question].choices[choice].correct = isCorrect;
       }
+    } else {
+      const case_sensitive = quiz.questions[question].case_sensitive;
+      questions[question].case_sensitive = case_sensitive;
     }
   }
 
-  console.log(questions)
-
-  res.status(501)
   res.json({
-    message: 'Not implemented yet'
+    questions
   });
 });
 
 app.post('/finish/:id', (req, res) => {
   // TODO: Finish quiz with answers using uid
+  // Need to check if the questions[question].question are the same (security reasons)
   res.status(501)
   res.json({
     message: 'Not implemented yet'
