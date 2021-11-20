@@ -1,0 +1,43 @@
+{
+  "name": "$QUIZ-NAME",
+  "author": "$AUTHOR-UID",
+  "reveal_answers": false,
+  "questions": {
+    "a": {
+      "type": "free-type",
+      "question": "What is life?",
+      "correct_answer": "Pain",
+      "case_sensitive": false
+    },
+    "b": {
+      "type": "multiple-choice",
+      "question": "Do you like me?",
+      "multiple_correct": false,
+      "choices": {
+        "a": {
+          "text": "Yes",
+          "correct": true
+        },
+        "b": {
+          "text": "No",
+          "correct": false
+        }
+      }
+    },
+    "c": {
+      "type": "multiple-choice",
+      "question": "Who do you love?",
+      "multiple_correct": true,
+      "choices": {
+        "a": {
+          "text": "Mom",
+          "correct": true
+        },
+        "b": {
+          "text": "Dad",
+          "correct": true
+        }
+      }
+    }
+  }
+}
